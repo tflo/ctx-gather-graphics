@@ -1,4 +1,4 @@
-#!/usr/bin/env Lua
+#!/usr/bin/env lua
 
 
 -- Version 0.9 (2024-12-23)
