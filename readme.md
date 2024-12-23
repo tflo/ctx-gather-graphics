@@ -1,29 +1,50 @@
-# Gather Image Files script for ConTeXt
+# Gather Graphics script for ConTeXt
 
 ## Requirements
 
-- For this form of the script: macOS. (For other OSs, adapt the copy command and other things.)
+- For this form of the script: macOS. 
+    - (For other OSs, you may have to adapt the copy command, path component delimiters, etc.)
 - Lua, probably 5.1 or later.
+    - Special packages or LuaFileSystem are not required.
 - [ConTeXt](https://wiki.contextgarden.net), obviously.
 
 ## What it does
 
-It copies all image files from the image paths used in your job into a configurable folder.
+It exports all graphic files used in your Ctx job to a configurable folder. Files will be grouped by job name, converted files will be grouped into a *_converted* subdirectory per job-name folder.
+
+This allows you to quickly gather all used graphic files of your job, no matter from what location they were pulled, much like you would do when “packaging” an InDesign job or similar.
+
+## Set up
+
+### Destination directory
+
+The only setup that the script requires is the destination directory where you want to copy your graphic files to.
+
+For this, simply set the `destdir` variable (at the top of the script) to an absolute or relative path. Spaces in the path should be OK.
+
+You don’t have to change the destination directory for different jobs, the script will dynamically create a *\<job-name\>* subdirectory inside your set `destdir` directory.
+
+### Copy command
+
+By default, `cp` is used with the `-n` option. This means that already existing files will not be overwritten with files with the same name. The output of the script tells you how many files have been exported and how many have been skipped because a file with the same was already present.
+
+To always overwrite, use the `-f` option. Check out `man cp` for more info.
+
 
 ## How to use
 
-The script reads the image paths from the table in the *\<job-name\>-figures-usage.lua* file.
+The script reads the graphic file paths from the table in the *\<job-name\>-figures-usage.lua* file.
 
-For this file to be created, you have to compile your job with `\enabletrackers[graphics.usage]` somewhere in your environment, or project/product/job file.
+For this file to be created, you have to compile your job with `\enabletrackers[graphics.usage]` somewhere in your environment, or in your project/product/job file.
 
-All paths in the *\<job-name\>-figures-usage.lua* file are relative, so you have to execute the script from within the same folder where ConTeXt created the *\<job-name\>-figures-usage.lua* file.
-(The script does *not* depend on any special Lua packages or on LuaFileSystem, so we cannot simply set the working directory for the whole script in a non-convoluted way.)
+In order to find the *\<job-name\>-figures-usage.lua* file and to resolve the relative graphic paths in that file, it is necessary to execute the script from within the same folder where ConTeXt created the *\<job-name\>-figures-usage.lua* file.
 
 So, to sum it up: 
 
-1. Compile the Ctx job with `\enabletrackers[graphics.usage]`.
-1. Place the script in the same folder as *\<job-name\>-figures-usage.lua*.
+1. Set the destination path in the script (one-time).
+1. Compile a Ctx job with `\enabletrackers[graphics.usage]` active.
+1. Place the script in the same folder where the *\<job-name\>-figures-usage.lua* file has been created.
 2. `cd` into that folder.
-3. Do `./ctx-gather-image-files.lua`.
+3. Run the script with `./ctx-gather-graphics.lua`.
 
 
