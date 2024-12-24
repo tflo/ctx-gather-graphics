@@ -4,11 +4,11 @@ Version 0.9.2-alpha (2024-12-24)
 
 ## Requirements
 
-- For this form of the script: macOS. 
+- For this form of the script: **macOS**. 
     - (For other OSs, you may have to adapt the copy command, path component delimiters, etc.)
-- Lua, probably 5.1 or later.
+- **Lua**, probably 5.1 or later.
     - Special packages/libraries or LuaFileSystem are *not* required.
-- [ConTeXt](https://wiki.contextgarden.net), obviously.
+- [**ConTeXt**](https://wiki.contextgarden.net), obviously.
 
 ## What the script does
 
