@@ -127,10 +127,30 @@ else
 	print 'No converted graphics found.'
 end
 if print_overwrite_hint then
-	print 'A HUGE AMOUNT OF GRAPHICS WAS SKIPPED DO TO DUPLICATE NAMES. Consider using `cp` with the `-f` option to always overwrite files, or empty your export directory before exporting.'
+	print 'A HUGE AMOUNT OF GRAPHICS WAS SKIPPED DUE TO DUPLICATE NAMES. Consider using `cp` with the `-f` option to always overwrite files, or empty your export directory before exporting.'
 end
 print 'Script completed, probably successfully.'
 -- END Lua script
 
 -- NOTE: It seems file conversion happens  mainly when Ctx takes an `.ai` file and then converts it to a PDF like
 -- for example `m_k_i_v_S2_dimensions_ai_c60ccda70ef92e32d7a6334f31c23259.pdf`
+
+
+--[[ License ===================================================================
+
+	Copyright © 2024 Thomas Floeren
+
+	ctx-gather-graphics is free software: you can redistribute it and/or
+	modify it under the terms of the GNU General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or (at
+	your option) any later version.
+
+	ctx-gather-graphics is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+	Public License for more details.
+
+	You may have received a copy of the GNU General Public License along with
+	ctx-gather-graphics. If not, see <https://www.gnu.org/licenses/>.
+
+============================================================================]]--
