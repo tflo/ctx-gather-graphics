@@ -26,7 +26,7 @@ You don’t have to change the destination directory for different jobs, the scr
 
 ### Copy command
 
-By default, `cp` is used with the `-n` option. This means that already existing files will not be overwritten with files with the same name. The output of the script tells you how many files have been exported and how many have been skipped because a file with the same was already present.
+By default, `cp` is used with the `-n` option. This means that already existing files will not be overwritten with files with the same name. The output of the script tells you how many files have been exported and how many have been skipped because a file with the same was already present. If the amount of skipped dupe-name files is not too high, the script will print a list of the paths.
 
 To always overwrite, use the `-f` option. Check out `man cp` for more info.
 
