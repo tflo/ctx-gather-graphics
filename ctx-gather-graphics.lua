@@ -1,7 +1,7 @@
 #!/usr/bin/env lua
 
 
--- Version 0.9.1 (2024-12-23)
+-- Version 0.9.2 (2024-12-24)
 
 -- BEGIN Settings
 -- Set the variable `destdir` to the destination directory where you want to gather the graphic files. It will be created if it doesn't exist yet.
@@ -15,6 +15,10 @@ local destdir = '$HOME/_tmp/Ctx Gathered Graphics' -- Absolute path example.
 -- With the `-n` option, duplicate filenames will not be overwritten. `-f` to overwrite.
 -- Check out `man cp` for more info.
 local copycmd = 'cp -c -p -n'
+-- Set this to true to put duplicate filenames that would otherwise be skipped into numbered subdirectories.
+-- This can help you find out which files have duplicate names and find out why.
+-- Activate this only if the job's export directory is empty; otherwise you get every existing file in a separate folder!
+local isolate_dupe_names = false
 -- END Settings
 
 -- BEGIN Lua script
@@ -62,20 +66,37 @@ local function copyfile(source, dest)
 end
 
 local num_graphicpaths, num_graphicpaths_converted = #graphicpaths, #graphicpaths_converted
+local print_overwrite_hint = false
+
 if num_graphicpaths > 0 then
-	local copied, num_copied = nil, 0
+	local copied, num_failed, failed = nil, 0, {}
 	for _, path in ipairs(graphicpaths) do
 		copied = copyfile(path, jobdir)
-		if copied then num_copied = num_copied + 1 end
+		if not copied then
+			num_failed = num_failed + 1
+			table.insert(failed, path)
+			if isolate_dupe_names then
+				local failed_dir = jobdir .. '/_duplicate_names/' .. num_failed
+				os.execute(string.format('mkdir -p "%s"', failed_dir))
+				copyfile(path, failed_dir)
+			end
+		end
 	end
-	local num_not_copied = num_graphicpaths - num_copied
-	print(string.format('Regular graphics: %s of %s found paths exported; %s skipped (`-n` and file name already exists).', num_copied, num_graphicpaths, num_not_copied))
-	if num_not_copied > 0 then
-		print 'Consider to use `cp` with the `-f` option to always overwrite files.'
+	print(string.format('REGULAR GRAPHICS: %s of %s found paths exported; %s skipped (`-n` and file name already exists).', num_graphicpaths - num_failed, num_graphicpaths, num_failed))
+	if num_failed > 0 then
+		if num_failed > math.floor(num_graphicpaths / 2) then
+			print_overwrite_hint = true
+		else
+			print 'Regular graphics skipped due to duplicate names:'
+			for _, path in ipairs(failed) do
+				print(path)
+			end
+		end
 	end
 else
 	print 'No regular graphics found.'
 end
+
 if num_graphicpaths_converted > 0 then
 	local jobdir_converted = jobdir .. '/_converted'
 	local dircreated = os.execute(string.format('mkdir -p "%s"', jobdir_converted))
@@ -83,16 +104,31 @@ if num_graphicpaths_converted > 0 then
 		print('The destination directory for converted files `' .. jobdir_converted .. '` could not be created! Aborting.')
 		return
 	end
-	local copied, num_copied = nil, 0
+	local copied, num_failed, failed = nil, 0, {}
 	for _, path in ipairs(graphicpaths_converted) do
 		copied = copyfile(path, jobdir_converted)
-		if copied then num_copied = num_copied + 1 end
+		if not copied then
+			num_failed = num_failed + 1
+			table.insert(failed, path)
+		end
 	end
-	print(string.format('Converted graphics: %s of %s found paths exported; %s skipped (`-n` and file name already exists).', num_copied, num_graphicpaths_converted, num_graphicpaths_converted - num_copied))
+	print(string.format('CONVERTED GRAPHICS: %s of %s found paths exported; %s skipped (`-n` and file name already exists).', num_graphicpaths_converted - num_failed, num_graphicpaths_converted, num_failed))
+	if num_failed > 0 then
+		if num_failed > math.floor(num_graphicpaths_converted / 2) then
+			print_overwrite_hint = true
+		else
+			print 'Converted graphics skipped due to duplicate names:'
+			for _, path in ipairs(failed) do
+				print(path)
+			end
+		end
+	end
 else
 	print 'No converted graphics found.'
 end
-
+if print_overwrite_hint then
+	print 'A HUGE AMOUNT OF GRAPHICS WAS SKIPPED DO TO DUPLICATE NAMES. Consider using `cp` with the `-f` option to always overwrite files, or empty your export directory before exporting.'
+end
 print 'Script completed, probably successfully.'
 -- END Lua script
 
