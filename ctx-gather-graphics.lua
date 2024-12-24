@@ -1,7 +1,7 @@
 #!/usr/bin/env lua
 
 
--- Version 0.9.2 (2024-12-24)
+-- Version 0.9.2-alpha (2024-12-24)
 
 -- BEGIN Settings
 -- Set the variable `destdir` to the destination directory where you want to gather the graphic files. It will be created if it doesn't exist yet.
@@ -16,7 +16,7 @@ local destdir = '$HOME/_tmp/Ctx Gathered Graphics' -- Absolute path example.
 -- Check out `man cp` for more info.
 local copycmd = 'cp -c -p -n'
 -- Set this to true to put duplicate filenames that would otherwise be skipped into numbered subdirectories.
--- This can help you find out which files have duplicate names and find out why.
+-- This can help you find out which files have duplicate names and why.
 -- Activate this only if the job's export directory is empty; otherwise you get every existing file in a separate folder!
 local isolate_dupe_names = false
 -- END Settings
